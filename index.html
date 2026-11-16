@@ -468,9 +468,16 @@ $('mOut').addEventListener('click',async e=>{const b=e.target.closest('[data-pdf
   b.textContent='...';try{const bytes=await pdfFor(x);const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.download='TCEQ-20700_'+(x.data.serM||x.id)+'_'+(x.data.i_date||'')+'.pdf';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},60000)}catch(err){toast('Could not make the PDF')}b.textContent='PDF'});
 $('dlgMuni').addEventListener('close',()=>{mData=null;$('mOut').innerHTML='';$('mCode').value=''});
 
+
+/* ---------- preset technicians (added once per device; deleting one keeps it deleted) ---------- */
+const PRESET_TECH=[
+ {k:'BP0020597',tName:'Bradley Ballard',coName:'Ballard Plumbing',coAddr:'124 W 8th St, Dumas, TX 79029',coPhone:'806-935-7575',tLic:'BP0020597',tExp:'2027-11-09',gtype:'Potable',gMake:'Midwest 845',gSN:'07210074',gDate:'2025-07-25'},
+ {k:'BP0020598',tName:'Joel Reyna',coName:'Ballard Plumbing',coAddr:'124 W 8th St, Dumas, TX 79029',coPhone:'806-935-7575',tLic:'BP0020598',tExp:'2027-11-09',gtype:'Potable',gMake:'',gSN:'',gDate:''}];
+function seedTech(){state.seeded=state.seeded||[];let n=0;PRESET_TECH.forEach(p=>{if(state.seeded.includes(p.k))return;state.seeded.push(p.k);if(state.tech.some(t=>(t.tLic||'').toUpperCase()===p.k))return;const o=Object.assign({},p);delete o.k;o.id=uid();o.t=Date.now();state.tech.push(o);n++});return n}
+
 /* ---------- start ---------- */
 (function init(){
-  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};
+  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};seedTech();
   render();sizeCanvas();
   if(state.draft&&state.draft.data){write(state.draft.data);currentId=state.draft.currentId||null;showSig(state.draft.sigData,state.draft.sigAt)}
   else $('i_date').value=today();
