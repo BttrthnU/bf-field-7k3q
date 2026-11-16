@@ -74,6 +74,12 @@ canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius
     <div><label for="pickMuni">Choose a saved municipality</label><select id="pickMuni"><option value="">&mdash; pick one to autofill &mdash;</option></select></div>
     <button id="saveMuni">Save as municipality</button>
   </div>
+  <div style="margin-bottom:10px;position:relative">
+    <label for="pwsFind">Find any Texas water system (name, city or PWS ID)</label>
+    <input id="pwsFind" type="search" placeholder="e.g. Dumas, Sunray, 0980001" autocomplete="off" autocapitalize="off">
+    <div id="pwsHits" style="display:none;border:1px solid #bbb;border-radius:8px;background:#fff;max-height:280px;overflow:auto;margin-top:4px"></div>
+    <div id="pwsInfo" style="font-size:12px;color:#666;margin-top:3px"></div>
+  </div>
   <div class="grid">
     <div><label>Name of PWS</label><input id="pwsName" autocomplete="off"></div>
     <div><label>PWS ID#</label><input id="pwsId" autocomplete="off"></div>
@@ -329,6 +335,15 @@ function fillAsm(x){write(x,ASM);saveDraft();const last=state.reports.filter(r=>
 $('serM').addEventListener('change',()=>{const s=$('serM').value.trim().toLowerCase();if(!s)return;const x=state.asm.find(a=>(a.serM||'').toLowerCase()===s);if(x&&confirm('This serial number is saved. Autofill its details?'))fillAsm(x)});
 function upsert(list,obj,match){const i=list.findIndex(match);obj.t=Date.now();if(i>=0){obj.id=list[i].id;list[i]=obj}else{obj.id=uid();list.push(obj)}return obj}
 $('saveMuni').onclick=()=>{const o=read();if(!o.pwsName.trim())return toast('Enter a PWS name first');upsert(state.muni,pick(o,MUNI),m=>m.pwsName.trim().toLowerCase()===o.pwsName.trim().toLowerCase());persist();render();toast('Municipality saved')};
+
+/* ---------- statewide PWS finder (tx-pws.json: active Texas systems from EPA SDWIS) ---------- */
+let PWS=null,PWSP=null;
+function pwsLoad(){return PWSP||(PWSP=fetch('tx-pws.json').then(r=>r.json()).then(a=>{PWS=a.map(r=>({id:r[0],name:r[1],type:r[2],city:r[3],pop:r[4],k:(r[1]+' '+r[0]+' '+r[3]).toLowerCase()}));$('pwsInfo').textContent=PWS.length.toLocaleString()+' active Texas public water systems loaded';return PWS}).catch(e=>{PWSP=null;$('pwsInfo').textContent='Statewide list not available offline yet. Open the app once with a connection.';return []}))}
+function pwsSearch(q){const t=q.toLowerCase().split(/\s+/).filter(Boolean);if(!t.length)return[];const out=[];for(const p of PWS){let s=0;for(const w of t){const i=p.k.indexOf(w);if(i<0){s=-1;break}s+=(p.name.toLowerCase().startsWith(w)||p.id.startsWith(w))?2:1}if(s>0)out.push([s,p])}out.sort((a,b)=>b[0]-a[0]||b[1].pop-a[1].pop);return out.slice(0,30).map(x=>x[1])}
+const TYPEN={CWS:'Community',TNCWS:'Transient',NTNCWS:'Non-transient'};
+$('pwsFind').addEventListener('focus',pwsLoad);
+$('pwsFind').addEventListener('input',async e=>{const box=$('pwsHits'),q=e.target.value.trim();if(!q){box.style.display='none';return}await pwsLoad();const hits=pwsSearch(q);box.innerHTML=hits.length?hits.map(p=>`<div class="hit" data-id="${p.id}" style="padding:9px 10px;border-bottom:1px solid #eee;cursor:pointer"><b>${esc(p.name)}</b><br><span style="font-size:12px;color:#666">${p.id} · ${esc(p.city)} · ${TYPEN[p.type]||p.type} · pop. ${p.pop.toLocaleString()}</span></div>`).join(''):'<div style="padding:9px 10px;color:#666">No match</div>';box.style.display='block'});
+$('pwsHits').addEventListener('click',e=>{const h=e.target.closest('.hit');if(!h||!PWS)return;const p=PWS.find(x=>x.id===h.dataset.id);if(!p)return;write({pwsName:p.name,pwsId:p.id,pwsAddr:p.city?p.city+', TX':''},['pwsName','pwsId','pwsAddr']);$('pwsHits').style.display='none';$('pwsFind').value='';saveDraft();toast('Water system filled in')});
 $('saveTech').onclick=()=>{const o=read();if(!o.tName.trim())return toast('Enter the tester name first');upsert(state.tech,pick(o,TECH),m=>m.tName.trim().toLowerCase()===o.tName.trim().toLowerCase());persist();render();toast('Technician saved')};
 function saveAsm(o){if(!(o.serM||'').trim()&&!(o.svcAddr||'').trim())return;upsert(state.asm,pick(o,ASM),a=>(o.serM&&a.serM===o.serM)||(!o.serM&&a.svcAddr===o.svcAddr&&a.btype===o.btype))}
 
@@ -417,7 +432,7 @@ let tt;function toast(m){document.querySelectorAll('.toast').forEach(e=>e.remove
 
 
 /* ---------- municipality view: encrypted reports published by the office ---------- */
-const normId=v=>String(v||'').toLowerCase().replace(/\s+/g,''),normCode=v=>String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const normId=v=>String(v||'').toLowerCase().replace(/[\s-]+/g,'').replace(/^tx(?=\d)/,''),normCode=v=>String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const b64=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));
 let mData=null;
 async function muniOpen(){
