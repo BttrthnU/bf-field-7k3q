@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Backflow Test Report</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Backflow">
+<meta name="theme-color" content="#0b5cab">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1c2430;--mut:#5d6b7c;--line:#cfd6df;--acc:#0b5cab;--ok:#1b7a3d;--bad:#b3261e;--yel:#fff9d6}
+@media(prefers-color-scheme:dark){:root{--bg:#14181e;--card:#1d242d;--ink:#e8edf3;--mut:#9aa8b8;--line:#35404d;--acc:#6fb1f2;--ok:#5fcf86;--bad:#ff8a80;--yel:#2c2a14}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+header{padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;margin:0;flex:1;min-width:150px}
+header small{display:block;color:var(--mut);font-weight:400;font-size:11px}
+main{max-width:980px;margin:0 auto;padding:10px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+section h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 10px;color:var(--mut)}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.span2{grid-column:span 2}@media(max-width:520px){.span2{grid-column:auto}}
+label{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--yel);border:1px solid var(--line);border-radius:6px;padding:8px}
+input[type=checkbox],input[type=radio]{width:22px;height:22px;accent-color:var(--acc);flex:none}
+textarea{min-height:80px;resize:vertical}
+.row{display:flex;gap:8px;align-items:flex-end}.row>*{flex:1}.row>button{flex:0 0 auto}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:8px;cursor:pointer;min-height:40px}
+button.p{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600}
+@media(prefers-color-scheme:dark){button.p{color:#0b1520}}
+button.d{color:var(--bad)}
+.chk{display:flex;flex-wrap:wrap;gap:8px 18px}.chk label{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:15px;margin:0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:6px;vertical-align:top;text-align:left}
+th{background:var(--bg);font-weight:600}
+td input[type=text],td input[type=number],td input[type=date],td input[type=time]{padding:6px;margin:2px 0;min-width:70px}
+.mini{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.note{font-size:12px;color:var(--mut)}
+.status{font-size:12px;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
+.status.ok{color:var(--ok);border-color:var(--ok)}.status.bad{color:var(--bad);border-color:var(--bad)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);max-width:600px;width:94vw}
+dialog::backdrop{background:#0008}
+.hist{max-height:300px;overflow:auto}
+.hist div{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.hist div span{flex:1;font-size:14px}
+.sigwrap{border:2px dashed var(--line);border-radius:10px;background:#fff;position:relative}
+canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius:10px}
+.sigx{position:absolute;left:12px;bottom:34px;right:12px;border-bottom:1px solid #999;pointer-events:none}
+.sigx span{position:absolute;left:0;bottom:-18px;font-size:11px;color:#777}
+.toast{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:20;font-size:14px;max-width:90vw;text-align:center}
+.bar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:4}
+.bar button{flex:1;min-width:120px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Backflow Test Report<small>TCEQ-20700 &middot; saved on this device</small></h1>
+  <span id="sync" class="status">stored locally</span>
+  <button id="btnNew">New</button>
+  <button id="btnHist">Reports</button>
+  <button id="btnMgr">Lists</button>
+  <button id="btnSet">Office</button>
+  <button id="btnMuni">Municipality</button>
+</header>
+<main>
+
+<section>
+  <h2>Public water system (saved municipalities)</h2>
+  <div class="row" style="margin-bottom:10px">
+    <div><label for="pickMuni">Choose a saved municipality</label><select id="pickMuni"><option value="">&mdash; pick one to autofill &mdash;</option></select></div>
+    <button id="saveMuni">Save as municipality</button>
+  </div>
+  <div class="grid">
+    <div><label>Name of PWS</label><input id="pwsName" autocomplete="off"></div>
+    <div><label>PWS ID#</label><input id="pwsId" autocomplete="off"></div>
+    <div class="span2"><label>PWS mailing address</label><input id="pwsAddr" autocomplete="off"></div>
+    <div><label>PWS contact person</label><input id="pwsContact" autocomplete="off"></div>
+    <div class="span2"><label>Address of service</label><input id="svcAddr" placeholder="Where the assembly is installed" autocomplete="off"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Type of backflow prevention assembly (BPA)</h2>
+  <div class="row" style="margin-bottom:10px">
+    <div><label for="pickAsm">Saved assemblies (autofills this section)</label><select id="pickAsm"><option value="">&mdash; or type a serial number; known ones autofill &mdash;</option></select></div>
+  </div>
+  <div class="chk">
+    <label><input type="radio" name="btype" value="RPBA"> Reduced Pressure Principle (RPBA)</label>
+    <label><input type="radio" name="btype" value="RPBA-D"> Reduced Pressure Principle-Detector (RPBA-D) <span class="note">Type II</span></label>
+    <label><input type="radio" name="btype" value="DCVA"> Double Check Valve (DCVA)</label>
+    <label><input type="radio" name="btype" value="DCVA-D"> Double Check-Detector (DCVA-D) <span class="note">Type II</span></label>
+    <label><input type="radio" name="btype" value="PVB"> Pressure Vacuum Breaker (PVB)</label>
+    <label><input type="radio" name="btype" value="SVB"> Spill-Resistant Pressure Vacuum Breaker (SVB)</label>
+  </div>
+  <p class="note">Type II assemblies: this form only handles a Type II assembly with a single check bypass.</p>
+  <div class="tbl"><table>
+    <tr><th></th><th>Main</th><th>Bypass</th></tr>
+    <tr><th>Manufacturer</th><td><input id="mfrM"></td><td><input id="mfrB"></td></tr>
+    <tr><th>Model number</th><td><input id="modM"></td><td><input id="modB"></td></tr>
+    <tr><th>Serial number</th><td><input id="serM"></td><td><input id="serB"></td></tr>
+    <tr><th>Size</th><td><input id="sizeM"></td><td><input id="sizeB"></td></tr>
+  </table></div>
+  <div class="grid" style="margin-top:10px">
+    <div><label>BPA location</label><input id="bpaLoc"></div>
+    <div><label>BPA serves</label><input id="bpaServes"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Reason for test</h2>
+  <div class="chk">
+    <label><input type="checkbox" id="rNew"> New</label>
+    <label><input type="checkbox" id="rExisting"> Existing</label>
+    <label><input type="checkbox" id="rReplace"> Replacement</label>
+  </div>
+  <div style="margin-top:8px"><label for="oldSer">Old model / serial # (replacement)</label><input id="oldSer"></div>
+  <div class="grid" style="margin-top:10px">
+    <div><label>Installed in accordance with manufacturer recommendations and/or local codes?</label>
+      <div class="chk"><label><input type="radio" name="codes" value="Yes"> Yes</label><label><input type="radio" name="codes" value="No"> No</label></div></div>
+    <div><label>Installed on a non-potable water supply (auxiliary)?</label>
+      <div class="chk"><label><input type="radio" name="aux" value="Yes"> Yes</label><label><input type="radio" name="aux" value="No"> No</label></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Test result</h2>
+  <p class="note">The backflow prevention assembly detailed above has been tested and maintained as required by commission regulations and is certified to be operating within acceptable parameters. Fill only what applies; if the initial test passes, skip repairs and the retest.</p>
+  <div id="tests"></div>
+</section>
+
+<section>
+  <h2>Differential pressure gauge used</h2>
+  <div class="grid">
+    <div><label>Gauge use</label><div class="chk"><label><input type="radio" name="gtype" value="Potable"> Potable</label><label><input type="radio" name="gtype" value="Non-Potable"> Non-Potable</label></div></div>
+    <div><label>Make / model</label><input id="gMake"></div>
+    <div><label>S/N</label><input id="gSN"></div>
+    <div><label>Date tested for accuracy</label><input id="gDate" type="date"></div>
+  </div>
+  <p class="note">Gauges used on potable assemblies must not be used on non-potable assemblies, and must be tested for accuracy at least every 12 months.</p>
+</section>
+
+<section>
+  <h2>Remarks</h2>
+  <textarea id="remarks"></textarea>
+</section>
+
+<section>
+  <h2>Licensed tester (saved technicians)</h2>
+  <div class="row" style="margin-bottom:10px">
+    <div><label for="pickTech">Choose a technician</label><select id="pickTech"><option value="">&mdash; pick one to autofill name, license, company and gauge &mdash;</option></select></div>
+    <button id="saveTech">Save as technician</button>
+  </div>
+  <div class="grid">
+    <div><label>Company name</label><input id="coName"></div>
+    <div><label>Licensed tester name (print / type)</label><input id="tName"></div>
+    <div><label>Company address</label><input id="coAddr"></div>
+    <div><label>BPAT license #</label><input id="tLic"></div>
+    <div><label>Company phone #</label><input id="coPhone" inputmode="tel"></div>
+    <div><label>License expiration date</label><input id="tExp" type="date"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Licensed tester signature</h2>
+  <p class="note" style="margin-top:0">The above is certified to be true at the time of testing. Sign with your finger or a stylus.</p>
+  <div class="sigwrap"><canvas id="sig"></canvas><div class="sigx"><span>Licensed tester signature</span></div></div>
+  <div class="row" style="margin-top:8px;align-items:center">
+    <span id="sigInfo" class="note">Not signed</span>
+    <button id="sigClear" class="d">Clear signature</button>
+  </div>
+  <p class="note">Test records must be kept at least three years (30 TAC 290.46(b)). The office receives the signed report; the public water system receives the signed original.</p>
+</section>
+
+</main>
+<div class="bar">
+  <button class="p" id="btnSave">Save</button>
+  <button class="p" id="btnSend">Save &amp; send to office</button>
+</div>
+
+<dialog id="dlgSet">
+  <h3 style="margin-top:0">Office</h3>
+  <p class="note">Used for the fallback email and text links. When you tap Send, your phone's share sheet opens and you pick Mail or Messages; the report goes as an attached file the office app reads.</p>
+  <label>Office email</label><input id="offEmail" type="email" inputmode="email">
+  <label style="margin-top:8px">Office phone (for texts)</label><input id="offPhone" type="tel" inputmode="tel">
+  <div class="row" style="margin-top:12px"><button class="p" id="setSave">Save</button></div>
+  <div style="margin-top:14px"><button id="btnBackup">Download a backup of everything on this device</button></div>
+  <div style="margin-top:8px"><label>Restore from a backup file</label><input type="file" id="restoreFile" accept=".json,.txt,application/json,text/plain"></div>
+  <form method="dialog" style="margin-top:12px"><button>Close</button></form>
+</dialog>
+<dialog id="dlgMgr">
+  <h3 style="margin-top:0">Saved lists</h3>
+  <h4>Municipalities</h4><div id="mgrMuni" class="hist"></div>
+  <h4>Technicians</h4><div id="mgrTech" class="hist"></div>
+  <h4>Assemblies</h4><div id="mgrAsm" class="hist"></div>
+  <form method="dialog" style="margin-top:12px"><button>Close</button></form>
+</dialog>
+<dialog id="dlgHist">
+  <h3 style="margin-top:0">Saved reports</h3>
+  <div id="histList" class="hist"></div>
+  <form method="dialog" style="margin-top:12px"><button>Close</button></form>
+</dialog>
+<dialog id="dlgSend">
+  <h3 style="margin-top:0">Send to office</h3>
+  <p id="sendMsg" class="note"></p>
+  <div style="display:grid;gap:8px">
+    <button class="p" id="sendDl">Download report file</button>
+    <button id="sendMail">Open email to office</button>
+    <button id="sendSms">Open text to office</button>
+    <button id="sendMark">I sent it: mark as sent</button>
+  </div>
+  <form method="dialog" style="margin-top:12px"><button>Close</button></form>
+</dialog>
+
+<dialog id="dlgMuni">
+  <h3 style="margin-top:0">Municipality view</h3>
+  <p class="note">For water systems: enter your PWS ID and the access code the testing company gave you to see your reports. Nothing is stored on this device after you close this window.</p>
+  <label>PWS ID</label><input id="mId" autocomplete="off" autocapitalize="characters">
+  <label style="margin-top:8px">Access code</label><input id="mCode" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX-XXXX">
+  <div class="row" style="margin-top:10px"><button class="p" id="mOpen">Open my reports</button></div>
+  <p id="mMsg" class="note"></p>
+  <div id="mOut" class="hist"></div>
+  <form method="dialog" style="margin-top:12px"><button id="mClose">Close</button></form>
+</dialog>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const LS='tceq20700.field.v1';
+const FORMAT='tceq-20700-field-report';
+let state={muni:[],tech:[],asm:[],reports:[],draft:null,settings:{email:'',phone:''}};
+let currentId=null, sigData='', sigAt='', ready=false;
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- local storage ---------- */
+function lsRead(){try{const v=localStorage.getItem(LS);return v?JSON.parse(v):null}catch(e){return null}}
+function lsWrite(){try{localStorage.setItem(LS,JSON.stringify(state));return true}catch(e){setStatus('storage full or blocked','bad');return false}}
+function setStatus(t,c){const s=$('sync');s.textContent=t;s.className='status '+(c||'')}
+function persist(){if(lsWrite())setStatus('stored locally','ok')}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+
+/* ---------- test table ---------- */
+function cl(n){return `<div class="chk"><label><input type="radio" name="${n}" value="Closed tight"> Closed tight</label><label><input type="radio" name="${n}" value="Leaked"> Leaked</label></div>`}
+function testHTML(k,label){
+  const p=n=>k+'_'+n;
+  return `<div class="tbl"><table><tr><th colspan="9">${label}</th></tr>
+  <tr><th>Result</th><td colspan="8"><div class="chk"><label><input type="radio" name="${p('res')}" value="Pass"> PASS</label><label><input type="radio" name="${p('res')}" value="Fail"> FAIL</label>
+   <span class="mini"><label style="margin:0">Date</label><input type="date" id="${p('date')}" style="width:160px"> <label style="margin:0">Time</label><input type="time" id="${p('time')}" style="width:130px"></span></div></td></tr>
+  <tr><th></th><th colspan="2">DCVA / RPBA: 1st check</th><th colspan="2">2nd check</th><th>Relief valve (RPBA)</th><th>Bypass check</th><th>Air inlet (PVB/SVB)</th><th>Check valve (PVB/SVB)</th></tr>
+  <tr><th>Held at (psid)</th>
+   <td colspan="2"><input type="number" inputmode="decimal" step="any" id="${p('c1')}"></td>
+   <td colspan="2"><input type="number" inputmode="decimal" step="any" id="${p('c2')}"></td>
+   <td><input type="number" inputmode="decimal" step="any" id="${p('rv')}"><div class="note">opened at psid</div></td>
+   <td><input type="number" inputmode="decimal" step="any" id="${p('by')}"></td>
+   <td><input type="number" inputmode="decimal" step="any" id="${p('ai')}"><div class="note">opened at psid</div></td>
+   <td><input type="number" inputmode="decimal" step="any" id="${p('cv')}"></td></tr>
+  <tr><th>Condition</th>
+   <td colspan="2">${cl(p('c1s'))}</td><td colspan="2">${cl(p('c2s'))}</td>
+   <td><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="${p('rvno')}"> Did not open</label></td>
+   <td>${cl(p('bys'))}</td>
+   <td><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="${p('aino')}"> Did not open</label><span class="note">Fully open?</span> <label style="display:inline-flex;gap:4px;align-items:center"><input type="radio" name="${p('aifull')}" value="Yes"> Yes</label> <label style="display:inline-flex;gap:4px;align-items:center"><input type="radio" name="${p('aifull')}" value="No"> No</label></td>
+   <td>${cl(p('cvs'))}</td></tr>
+  ${k==='r'?'':`<tr><th>Repairs and materials used**</th><td colspan="8"><textarea id="repairs" style="min-height:50px"></textarea><label>Bypass repairs / materials</label><input id="repairsB"></td></tr>`}
+  </table></div><p class="note">${k==='i'?'*** 2nd check: numeric reading required for DCVA only. ** Use only the manufacturer\'s replacement parts.':'&nbsp;'}</p>`;
+}
+$('tests').innerHTML=testHTML('i','Initial test')+testHTML('r','Test after repairs');
+
+/* ---------- form <-> object ---------- */
+const TXT=['pwsName','pwsId','pwsAddr','pwsContact','svcAddr','mfrM','mfrB','modM','modB','serM','serB','sizeM','sizeB','bpaLoc','bpaServes','oldSer','gMake','gSN','gDate','remarks','coName','tName','coAddr','tLic','coPhone','tExp','repairs','repairsB'];
+const CHK=['rNew','rExisting','rReplace'];
+const RAD=['btype','codes','aux','gtype'];
+['i','r'].forEach(k=>{
+  ['date','time','c1','c2','rv','by','ai','cv'].forEach(n=>TXT.push(k+'_'+n));
+  ['rvno','aino'].forEach(n=>CHK.push(k+'_'+n));
+  ['res','c1s','c2s','bys','cvs','aifull'].forEach(n=>RAD.push(k+'_'+n));
+});
+function read(){const o={};TXT.forEach(i=>{const e=$(i);if(e)o[i]=e.value});CHK.forEach(i=>{const e=$(i);if(e)o[i]=e.checked});RAD.forEach(n=>{const e=document.querySelector(`input[name="${n}"]:checked`);o[n]=e?e.value:''});return o}
+function write(o,keys){(keys||[...TXT,...CHK,...RAD]).forEach(k=>{
+  if(!(k in o))return;
+  if(TXT.includes(k)){const e=$(k);if(e)e.value=o[k]}
+  else if(CHK.includes(k)){const e=$(k);if(e)e.checked=!!o[k]}
+  else document.querySelectorAll(`input[name="${k}"]`).forEach(e=>e.checked=(e.value===o[k]));
+})}
+const MUNI=['pwsName','pwsId','pwsAddr','pwsContact'];
+const TECH=['coName','tName','coAddr','tLic','coPhone','tExp','gtype','gMake','gSN','gDate'];
+const ASM=['svcAddr','btype','mfrM','mfrB','modM','modB','serM','serB','sizeM','sizeB','bpaLoc','bpaServes'];
+const pick=(o,ks)=>{const r={};ks.forEach(k=>r[k]=o[k]);return r};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+
+/* ---------- signature pad ---------- */
+const cv=$('sig'),cx=cv.getContext('2d');let drawing=false,last=null,dirty=false;
+function sizeCanvas(){const keep=sigData;const r=cv.getBoundingClientRect();const dpr=window.devicePixelRatio||1;cv.width=Math.max(1,Math.round(r.width*dpr));cv.height=Math.max(1,Math.round(r.height*dpr));cx.setTransform(dpr,0,0,dpr,0,0);cx.lineWidth=2.4;cx.lineCap='round';cx.lineJoin='round';cx.strokeStyle='#111';if(keep)paintSig(keep)}
+function paintSig(url){const im=new Image();im.onload=()=>{const r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width,r.height);const s=Math.min(r.width/im.width,r.height/im.height);cx.drawImage(im,(r.width-im.width*s)/2,(r.height-im.height*s)/2,im.width*s,im.height*s)};im.src=url}
+function pt(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);drawing=true;last=pt(e);cx.beginPath();cx.arc(last.x,last.y,1.2,0,6.3);cx.fillStyle='#111';cx.fill();dirty=true});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=pt(e);cx.beginPath();cx.moveTo(last.x,last.y);cx.lineTo(p.x,p.y);cx.stroke();last=p});
+const endSig=e=>{if(!drawing)return;drawing=false;captureSig()};
+cv.addEventListener('pointerup',endSig);cv.addEventListener('pointercancel',endSig);cv.addEventListener('pointerleave',endSig);
+function captureSig(){
+  // export a tight, transparent-background PNG of the strokes
+  const w=cv.width,h=cv.height,d=cx.getImageData(0,0,w,h).data;let x0=w,y0=h,x1=0,y1=0,any=false;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(d[(y*w+x)*4+3]>10){any=true;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+  if(!any){sigData='';sigAt='';updSigInfo();return}
+  const pad=8;x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
+  const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').putImageData(cx.getImageData(x0,y0,o.width,o.height),0,0);
+  sigData=o.toDataURL('image/png');sigAt=new Date().toISOString();updSigInfo();saveDraft();
+}
+function clearSig(){const r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width,r.height);sigData='';sigAt='';updSigInfo();saveDraft()}
+function showSig(url,at){sigData=url||'';sigAt=at||'';const r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width,r.height);if(url)paintSig(url);updSigInfo()}
+function updSigInfo(){$('sigInfo').textContent=sigData?'Signed '+new Date(sigAt).toLocaleString():'Not signed'}
+$('sigClear').onclick=clearSig;
+window.addEventListener('resize',()=>{if(!drawing)sizeCanvas()});
+
+/* ---------- lists ---------- */
+function fillSel(sel,items,labelFn,ph){const cur=sel.value;sel.innerHTML=`<option value="">${ph}</option>`+items.map(x=>`<option value="${x.id}">${esc(labelFn(x))}</option>`).join('');sel.value=cur}
+function render(){
+  fillSel($('pickMuni'),state.muni,x=>x.pwsName+(x.pwsId?' ('+x.pwsId+')':''),'— pick one to autofill —');
+  fillSel($('pickTech'),state.tech,x=>x.tName+(x.coName?' — '+x.coName:''),'— pick one to autofill name, license, company and gauge —');
+  fillSel($('pickAsm'),state.asm,x=>(x.svcAddr||'?')+' · '+(x.btype||'')+' · S/N '+(x.serM||'?'),'— or type a serial number; known ones autofill —');
+}
+$('pickMuni').onchange=e=>{const x=state.muni.find(m=>m.id===e.target.value);if(x){write(x,MUNI);saveDraft()}};
+$('pickTech').onchange=e=>{const x=state.tech.find(m=>m.id===e.target.value);if(x){write(x,TECH);saveDraft();toast('Technician filled in')}};
+$('pickAsm').onchange=e=>{const x=state.asm.find(m=>m.id===e.target.value);if(x)fillAsm(x)};
+function fillAsm(x){write(x,ASM);saveDraft();const last=state.reports.filter(r=>r.data&&r.data.serM&&r.data.serM===x.serM).sort((a,b)=>(b.updated||0)-(a.updated||0))[0];
+  toast(last?'Assembly filled in. Last tested '+(last.data.i_date||'(no date)')+' – '+(last.data.i_res||'no result'):'Assembly filled in')}
+$('serM').addEventListener('change',()=>{const s=$('serM').value.trim().toLowerCase();if(!s)return;const x=state.asm.find(a=>(a.serM||'').toLowerCase()===s);if(x&&confirm('This serial number is saved. Autofill its details?'))fillAsm(x)});
+function upsert(list,obj,match){const i=list.findIndex(match);obj.t=Date.now();if(i>=0){obj.id=list[i].id;list[i]=obj}else{obj.id=uid();list.push(obj)}return obj}
+$('saveMuni').onclick=()=>{const o=read();if(!o.pwsName.trim())return toast('Enter a PWS name first');upsert(state.muni,pick(o,MUNI),m=>m.pwsName.trim().toLowerCase()===o.pwsName.trim().toLowerCase());persist();render();toast('Municipality saved')};
+$('saveTech').onclick=()=>{const o=read();if(!o.tName.trim())return toast('Enter the tester name first');upsert(state.tech,pick(o,TECH),m=>m.tName.trim().toLowerCase()===o.tName.trim().toLowerCase());persist();render();toast('Technician saved')};
+function saveAsm(o){if(!(o.serM||'').trim()&&!(o.svcAddr||'').trim())return;upsert(state.asm,pick(o,ASM),a=>(o.serM&&a.serM===o.serM)||(!o.serM&&a.svcAddr===o.svcAddr&&a.btype===o.btype))}
+
+/* ---------- save / drafts ---------- */
+let dTimer=null;
+function saveDraft(){if(!ready)return;clearTimeout(dTimer);dTimer=setTimeout(()=>{state.draft={data:read(),currentId,sigData,sigAt};lsWrite()},400)}
+document.addEventListener('input',saveDraft);document.addEventListener('change',saveDraft);
+function saveReport(){
+  const o=read();
+  if(!o.pwsName.trim()&&!o.svcAddr.trim()){toast('Fill in at least the PWS name or address of service');return null}
+  if(o.pwsName.trim())upsert(state.muni,pick(o,MUNI),m=>m.pwsName.trim().toLowerCase()===o.pwsName.trim().toLowerCase());
+  if(o.tName.trim())upsert(state.tech,pick(o,TECH),m=>m.tName.trim().toLowerCase()===o.tName.trim().toLowerCase());
+  saveAsm(o);
+  let r=currentId&&state.reports.find(x=>x.id===currentId);
+  if(!r){r={id:uid(),created:Date.now(),status:'saved'};state.reports.push(r);currentId=r.id}
+  r.data=o;r.signature=sigData;r.signedAt=sigAt;r.updated=Date.now();
+  if(r.status==='sent')r.status='changed'; // edited after sending
+  state.draft=null;persist();render();return r;
+}
+$('btnSave').onclick=()=>{const r=saveReport();if(r)toast('Saved on this device')};
+
+/* ---------- report file + summary ---------- */
+function pack(r){return {format:FORMAT,version:1,id:r.id,created:new Date(r.created).toISOString(),updated:new Date(r.updated).toISOString(),signedAt:r.signedAt||'',data:r.data,signature:r.signature||''}}
+function summary(r){const o=r.data;const L=[];const a=(k,v)=>{if(v)L.push(k+': '+v)};
+  L.push('Backflow test report (TCEQ-20700)');a('PWS',o.pwsName+(o.pwsId?' ('+o.pwsId+')':''));a('Address of service',o.svcAddr);a('Assembly',[o.btype,o.mfrM,o.modM,o.serM&&'S/N '+o.serM].filter(Boolean).join(' · '));
+  a('Initial test',[o.i_res,o.i_date].filter(Boolean).join(' · '));if(o.r_res)a('Retest',[o.r_res,o.r_date].filter(Boolean).join(' · '));a('Tester',[o.tName,o.tLic&&'BPAT '+o.tLic].filter(Boolean).join(' · '));L.push(r.signature?'Signed: yes':'Signed: NO');L.push('Report file attached. Import it in the office app.');return L.join('\n')}
+function fileName(r){const o=r.data;const s=x=>String(x||'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,24);return `BF20700_${s(o.pwsName)||'report'}_${s(o.serM)||r.id}_${o.i_date||today()}.txt`}
+
+let sending=null;
+async function send(){
+  const r=saveReport();if(!r)return;
+  if(!r.signature&&!confirm('This report is not signed. Send anyway?'))return;
+  sending=r;
+  const text=JSON.stringify(pack(r));
+  let file=null;try{file=new File([text],fileName(r),{type:'text/plain'})}catch(e){}
+  try{
+    if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'Backflow report '+(r.data.pwsName||''),text:summary(r)});
+      markSent(r);return;
+    }
+  }catch(e){if(e&&e.name==='AbortError'){toast('Not sent');return}}
+  $('sendMsg').textContent='This device cannot attach the file from here. Download the report file, then attach it to an email or text to the office.';
+  $('dlgSend').showModal();
+}
+function markSent(r){r.status='sent';r.sentAt=Date.now();persist();toast('Marked as sent')}
+$('btnSend').onclick=send;
+$('sendDl').onclick=()=>{if(!sending)return;const b=new Blob([JSON.stringify(pack(sending))],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fileName(sending);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)};
+$('sendMail').onclick=()=>{if(!sending)return;location.href='mailto:'+encodeURIComponent(state.settings.email||'')+'?subject='+encodeURIComponent('Backflow report '+(sending.data.pwsName||''))+'&body='+encodeURIComponent(summary(sending)+'\n\n(Attach the downloaded report file.)')};
+$('sendSms').onclick=()=>{if(!sending)return;location.href='sms:'+(state.settings.phone||'')+'?&body='+encodeURIComponent(summary(sending))};
+$('sendMark').onclick=()=>{if(sending){markSent(sending);$('dlgSend').close()}};
+
+/* ---------- new / history ---------- */
+function newForm(keepTech){
+  const keep=keepTech?pick(read(),TECH):null;
+  TXT.forEach(i=>{const e=$(i);if(e)e.value=''});CHK.forEach(i=>{const e=$(i);if(e)e.checked=false});document.querySelectorAll('input[type=radio]').forEach(e=>e.checked=false);
+  ['pickMuni','pickTech','pickAsm'].forEach(i=>$(i).value='');
+  currentId=null;showSig('','');$('i_date').value=today();
+  if(keep)write(keep,TECH);
+  state.draft=null;lsWrite();
+}
+$('btnNew').onclick=()=>{if(confirm('Start a new report? Anything unsaved on this form is lost. The technician and gauge are kept.'))newForm(true)};
+const label={saved:'saved',sent:'sent',changed:'changed since sent'};
+$('btnHist').onclick=()=>{const r=[...state.reports].sort((a,b)=>(b.updated||0)-(a.updated||0));
+  $('histList').innerHTML=r.map(x=>`<div><span>${esc(x.data.i_date||'')} · ${esc(x.data.pwsName||'')}<br><small class="note">${esc(x.data.svcAddr||'')} · ${label[x.status]||x.status}${x.signature?' · signed':' · not signed'}</small></span><span style="flex:none"><button data-load="${x.id}">Open</button> <button data-resend="${x.id}">Send</button> <button class="d" data-del="${x.id}">Delete</button></span></div>`).join('')||'<p class="note">No saved reports yet.</p>';
+  $('dlgHist').showModal()};
+$('dlgHist').addEventListener('click',e=>{
+  const l=e.target.closest('[data-load]'),d=e.target.closest('[data-del]'),s=e.target.closest('[data-resend]');
+  if(l){const x=state.reports.find(r=>r.id===l.dataset.load);if(x){newForm(false);write(x.data);currentId=x.id;showSig(x.signature,x.signedAt);$('dlgHist').close();toast('Opened. Save to keep changes.')}}
+  if(s){const x=state.reports.find(r=>r.id===s.dataset.resend);if(x){$('dlgHist').close();newForm(false);write(x.data);currentId=x.id;showSig(x.signature,x.signedAt);send()}}
+  if(d&&confirm('Delete this saved report from this device? The office keeps its own copy if it was sent.')){state.reports=state.reports.filter(r=>r.id!==d.dataset.del);if(currentId===d.dataset.del)currentId=null;persist();$('btnHist').onclick()}});
+
+/* ---------- lists + settings dialogs ---------- */
+function listRow(arr,lab,key){return arr.map(x=>`<div><span>${esc(lab(x))}</span><button class="d" data-k="${key}" data-id="${x.id}">Delete</button></div>`).join('')||'<p class="note">Nothing saved yet.</p>'}
+function drawMgr(){
+  $('mgrMuni').innerHTML=listRow(state.muni,x=>x.pwsName+(x.pwsId?' ('+x.pwsId+')':''),'muni');
+  $('mgrTech').innerHTML=listRow(state.tech,x=>x.tName+(x.tLic?' · BPAT '+x.tLic:''),'tech');
+  $('mgrAsm').innerHTML=listRow(state.asm,x=>(x.svcAddr||'?')+' · S/N '+(x.serM||'?'),'asm')}
+$('btnMgr').onclick=()=>{drawMgr();$('dlgMgr').showModal()};
+$('dlgMgr').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;state[b.dataset.k]=state[b.dataset.k].filter(x=>x.id!==b.dataset.id);persist();render();drawMgr()});
+$('btnSet').onclick=()=>{$('offEmail').value=state.settings.email||'';$('offPhone').value=state.settings.phone||'';$('dlgSet').showModal()};
+$('setSave').onclick=()=>{state.settings.email=$('offEmail').value.trim();state.settings.phone=$('offPhone').value.trim();persist();$('dlgSet').close();toast('Office saved')};
+$('btnBackup').onclick=()=>{const b=new Blob([JSON.stringify(state)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backflow-backup-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)};
+$('restoreFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const s=JSON.parse(await f.text());if(!s||!Array.isArray(s.reports))throw 0;if(!confirm('Replace everything on this device with this backup?'))return;state=Object.assign(state,s);persist();render();toast('Restored')}catch(x){toast('That is not a backup file')}};
+
+let tt;function toast(m){document.querySelectorAll('.toast').forEach(e=>e.remove());const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);clearTimeout(tt);tt=setTimeout(()=>d.remove(),3200)}
+
+
+/* ---------- municipality view: encrypted reports published by the office ---------- */
+const normId=v=>String(v||'').toLowerCase().replace(/\s+/g,''),normCode=v=>String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const b64=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));
+let mData=null;
+async function muniOpen(){
+  const msg=$('mMsg');msg.textContent='';$('mOut').innerHTML='';mData=null;
+  const id=normId($('mId').value),code=normCode($('mCode').value);
+  if(!id||!code){msg.textContent='Enter both your PWS ID and access code.';return}
+  if(!(window.crypto&&crypto.subtle)){msg.textContent='This browser cannot decrypt here. Open the page over https.';return}
+  msg.textContent='Opening...';
+  try{
+    const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(id)))).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,20);
+    const r=await fetch('data/m-'+hash+'.json?'+Date.now(),{cache:'no-store'});
+    if(!r.ok){msg.textContent='No published reports for that PWS ID yet.';return}
+    const b=await r.json();
+    const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey']);
+    const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(b.salt),iterations:b.iter,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+    let pt;try{pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(b.iv)},key,b64(b.ct))}catch(e){msg.textContent='That access code does not match this PWS ID.';return}
+    mData=JSON.parse(new TextDecoder().decode(pt));
+    const reps=[...mData.reports].sort((a,c)=>String(c.data.i_date||'').localeCompare(String(a.data.i_date||'')));
+    msg.textContent=(mData.pwsName||'')+': '+reps.length+' report'+(reps.length==1?'':'s')+' (published '+new Date(mData.published).toLocaleDateString()+')';
+    $('mOut').innerHTML=reps.map(x=>`<div><span>${esc(x.data.i_date||'')} · ${esc(x.data.svcAddr||'')}<br><small class="note">${esc(x.data.btype||'')} S/N ${esc(x.data.serM||'')} · ${esc(x.data.r_res||x.data.i_res||'')} · ${esc(x.data.tName||'')}</small></span><button class="p" data-pdf="${esc(x.id)}">PDF</button></div>`).join('')||'<p class="note">No reports yet.</p>';
+  }catch(e){msg.textContent='Could not load reports. Check your connection and try again.'}
+}
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('load '+src));document.head.appendChild(s)})}
+async function pdfFor(x){
+  if(!window.PDFLib)await loadScript('vendor/pdf-lib.min.js');
+  if(!window.BFPDF)await loadScript('pdffill.js');
+  const sig=x.signature?b64(x.signature.split(',')[1]):null;
+  return window.BFPDF.fillReport(x.data,sig);
+}
+$('btnMuni').onclick=()=>{$('mOut').innerHTML='';$('mMsg').textContent='';$('mCode').value='';$('dlgMuni').showModal()};
+$('mOpen').onclick=muniOpen;
+$('mOut').addEventListener('click',async e=>{const b=e.target.closest('[data-pdf]');if(!b||!mData)return;const x=mData.reports.find(r=>r.id===b.dataset.pdf);if(!x)return;
+  b.textContent='...';try{const bytes=await pdfFor(x);const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.download='TCEQ-20700_'+(x.data.serM||x.id)+'_'+(x.data.i_date||'')+'.pdf';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},60000)}catch(err){toast('Could not make the PDF')}b.textContent='PDF'});
+$('dlgMuni').addEventListener('close',()=>{mData=null;$('mOut').innerHTML='';$('mCode').value=''});
+
+/* ---------- start ---------- */
+(function init(){
+  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};
+  render();sizeCanvas();
+  if(state.draft&&state.draft.data){write(state.draft.data);currentId=state.draft.currentId||null;showSig(state.draft.sigData,state.draft.sigAt)}
+  else $('i_date').value=today();
+  ready=true;persist();
+  if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+  window.__bf={state:()=>state,read,write,saveReport,pack};
+})();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "Backflow Test Report (TCEQ-20700)",
+  "short_name": "Backflow",
+  "description": "Fill out, sign and send TCEQ-20700 backflow test reports from the field.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b5cab",
+  "theme_color": "#0b5cab",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
