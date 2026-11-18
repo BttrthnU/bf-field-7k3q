@@ -3,62 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Backflow Test Report</title>
+<title>Ballard Plumbing · Backflow Test Report</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Backflow">
-<meta name="theme-color" content="#0b5cab">
+<meta name="apple-mobile-web-app-title" content="Ballard BPAT">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a2048">
 <style>
-:root{--bg:#f4f5f7;--card:#fff;--ink:#1c2430;--mut:#5d6b7c;--line:#cfd6df;--acc:#0b5cab;--ok:#1b7a3d;--bad:#b3261e;--yel:#fff9d6}
-@media(prefers-color-scheme:dark){:root{--bg:#14181e;--card:#1d242d;--ink:#e8edf3;--mut:#9aa8b8;--line:#35404d;--acc:#6fb1f2;--ok:#5fcf86;--bad:#ff8a80;--yel:#2c2a14}}
+:root{color-scheme:light;--navy:#0a2048;--blue:#1257b8;--blue2:#1e7be0;--sky:#eaf2fc;--silver:#c3cad4;--silver2:#e6eaef;--steel:#8a96a6;--bg:#f2f5f9;--card:#fff;--ink:#14213a;--mut:#5b6b80;--line:#d3dae3;--acc:#1257b8;--ok:#177a43;--bad:#b3261e;--yel:#f7faff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
-header{padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-header h1{font-size:16px;margin:0;flex:1;min-width:150px}
-header small{display:block;color:var(--mut);font-weight:400;font-size:11px}
+body{margin:0;background:linear-gradient(180deg,#e9eef5 0,#f6f8fb 260px);background-attachment:fixed;color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+header{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));background:linear-gradient(135deg,var(--navy) 0,#0f3478 55%,var(--blue) 100%);color:#fff;position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:3px solid transparent;border-image:linear-gradient(90deg,#9aa5b3,#f4f6f9,#9aa5b3) 1;box-shadow:0 2px 10px #0a204833}
+header .mark{width:52px;height:48px;border-radius:10px;mix-blend-mode:screen;flex:none}
+header h1{font-size:17px;margin:0;flex:1;min-width:150px;letter-spacing:.02em}
+header h1 b{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#cfd8e4;font-weight:600}
+header small{display:block;color:#c3cfdf;font-weight:400;font-size:11px}
+header button{background:linear-gradient(180deg,#ffffff22,#ffffff0d);color:#fff;border-color:#ffffff40;min-height:36px;padding:7px 11px}
+header .status{color:#d9e3f0;border-color:#ffffff55}
+header .status.ok{color:#9ff0c0;border-color:#9ff0c0}
 main{max-width:980px;margin:0 auto;padding:10px}
-section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
-section h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 10px;color:var(--mut)}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0;box-shadow:0 1px 0 #fff inset,0 2px 8px #0a20480d;position:relative;overflow:hidden}
+section::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--blue2),var(--navy))}
+section h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px;color:var(--blue);padding-bottom:6px;border-bottom:1px solid;border-image:linear-gradient(90deg,var(--silver),transparent) 1}
 .grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 .span2{grid-column:span 2}@media(max-width:520px){.span2{grid-column:auto}}
 label{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}
-input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--yel);border:1px solid var(--line);border-radius:6px;padding:8px}
-input[type=checkbox],input[type=radio]{width:22px;height:22px;accent-color:var(--acc);flex:none}
+input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--yel);border:1px solid var(--silver);border-radius:8px;padding:8px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px #1e7be033;background:#fff}
+input[type=checkbox],input[type=radio]{width:22px;height:22px;accent-color:var(--blue);flex:none}
 textarea{min-height:80px;resize:vertical}
 .row{display:flex;gap:8px;align-items:flex-end}.row>*{flex:1}.row>button{flex:0 0 auto}
-button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:8px;cursor:pointer;min-height:40px}
-button.p{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600}
-@media(prefers-color-scheme:dark){button.p{color:#0b1520}}
+button{font:inherit;border:1px solid var(--silver);background:linear-gradient(180deg,#fff,var(--silver2));color:var(--navy);padding:9px 14px;border-radius:10px;cursor:pointer;min-height:42px;font-weight:500}
+button:active{transform:translateY(1px)}
+button.p{background:linear-gradient(180deg,var(--blue2),var(--blue));color:#fff;border-color:#0d4a9e;font-weight:600;box-shadow:0 2px 6px #1257b840}
+button.big{font-size:18px;min-height:54px}
 button.d{color:var(--bad)}
 .chk{display:flex;flex-wrap:wrap;gap:8px 18px}.chk label{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:15px;margin:0}
 .tbl{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{border:1px solid var(--line);padding:6px;vertical-align:top;text-align:left}
-th{background:var(--bg);font-weight:600}
+th{background:linear-gradient(180deg,#f7f9fc,var(--silver2));font-weight:600;color:var(--navy)}
 td input[type=text],td input[type=number],td input[type=date],td input[type=time]{padding:6px;margin:2px 0;min-width:70px}
 .mini{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .note{font-size:12px;color:var(--mut)}
 .status{font-size:12px;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
 .status.ok{color:var(--ok);border-color:var(--ok)}.status.bad{color:var(--bad);border-color:var(--bad)}
-dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);max-width:600px;width:94vw}
-dialog::backdrop{background:#0008}
+dialog{border:1px solid var(--silver);border-radius:16px;background:var(--card);color:var(--ink);max-width:600px;width:94vw;box-shadow:0 20px 60px #0a204866;padding:18px}
+dialog h3{color:var(--navy)}
+dialog::backdrop{background:#0a2048aa}
 .hist{max-height:300px;overflow:auto}
 .hist div{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
 .hist div span{flex:1;font-size:14px}
-.sigwrap{border:2px dashed var(--line);border-radius:10px;background:#fff;position:relative}
-canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius:10px}
+.sigwrap{border:2px dashed var(--silver);border-radius:12px;background:#fff;position:relative}
+canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius:12px}
 .sigx{position:absolute;left:12px;bottom:34px;right:12px;border-bottom:1px solid #999;pointer-events:none}
 .sigx span{position:absolute;left:0;bottom:-18px;font-size:11px;color:#777}
-.toast{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:20;font-size:14px;max-width:90vw;text-align:center}
-.bar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:4}
+.toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;z-index:30;font-size:14px;max-width:90vw;text-align:center;box-shadow:0 6px 20px #0a204855}
+.bar{position:sticky;bottom:0;background:linear-gradient(180deg,#ffffffee,#f1f4f8);backdrop-filter:blur(6px);border-top:1px solid var(--silver);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:4}
 .bar button{flex:1;min-width:120px}
+#splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 40%,#123a82 0,#0a2048 55%,#050f26 100%);transition:opacity .5s ease;cursor:pointer}
+#splash img{width:min(78vw,420px);mix-blend-mode:screen;animation:glow 2.2s ease-in-out infinite alternate}
+#splash .t{color:#dfe6ef;font-size:13px;letter-spacing:.24em;text-transform:uppercase;text-align:center}
+#splash .t i{display:block;font-style:normal;color:#9fb0c6;letter-spacing:.12em;font-size:11px;margin-top:6px}
+#splash .line{width:160px;height:2px;background:linear-gradient(90deg,transparent,#e8edf3,transparent)}
+#splash.go{opacity:0;pointer-events:none}
+@keyframes glow{from{filter:brightness(.92)}to{filter:brightness(1.12) drop-shadow(0 0 18px #2a8cff66)}}
+@media(prefers-reduced-motion:reduce){#splash img{animation:none}}
+.done{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--sky);border:1px solid #c7dbf3;margin:10px 0;font-size:14px}
+.done.ok{background:#e8f6ee;border-color:#b7e1c7}.done.bad{background:#fdeceb;border-color:#f3c3bf}
 </style>
 </head>
 <body>
+<div id="splash" role="img" aria-label="Ballard Plumbing"><img src="logo.jpg" alt="Ballard Plumbing"><div class="line"></div><div class="t">Backflow Test Report<i>TCEQ-20700 &middot; tap to begin</i></div></div>
 <header>
-  <h1>Backflow Test Report<small>TCEQ-20700 &middot; saved on this device</small></h1>
+  <img class="mark" src="logo-mark.jpg" alt="">
+  <h1><b>Ballard Plumbing</b>Backflow Test Report<small>TCEQ-20700 &middot; saved on this device</small></h1>
   <span id="sync" class="status">stored locally</span>
   <button id="btnNew">New</button>
   <button id="btnHist">Reports</button>
@@ -183,14 +204,16 @@ canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius
 
 </main>
 <div class="bar">
-  <button class="p" id="btnSave">Save</button>
-  <button class="p" id="btnSend">Save &amp; send to office</button>
+  <button id="btnSave">Save draft</button>
+  <button class="p" id="btnFinish">Finish &amp; make signed form</button>
 </div>
 
 <dialog id="dlgSet">
   <h3 style="margin-top:0">Office</h3>
   <p class="note">Used for the fallback email and text links. When you tap Send, your phone's share sheet opens and you pick Mail or Messages; the report goes as an attached file the office app reads.</p>
-  <label>Office email</label><input id="offEmail" type="email" inputmode="email">
+  <label>Data copy goes automatically to</label><input id="offCollect" type="email" inputmode="email" placeholder="ballardplumbing@gmail.com">
+  <label style="display:flex;gap:8px;align-items:center;margin-top:6px;color:var(--ink)"><input type="checkbox" id="offAuto"> Email a copy of every finished report to this address</label>
+  <label style="margin-top:8px">Office email (for the manual email link)</label><input id="offEmail" type="email" inputmode="email">
   <label style="margin-top:8px">Office phone (for texts)</label><input id="offPhone" type="tel" inputmode="tel">
   <div class="row" style="margin-top:12px"><button class="p" id="setSave">Save</button></div>
   <div style="margin-top:14px"><button id="btnBackup">Download a backup of everything on this device</button></div>
@@ -208,6 +231,20 @@ canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius
   <h3 style="margin-top:0">Saved reports</h3>
   <div id="histList" class="hist"></div>
   <form method="dialog" style="margin-top:12px"><button>Close</button></form>
+</dialog>
+<dialog id="dlgFinish">
+  <h3 style="margin-top:0">Signed form ready</h3>
+  <p id="finName" class="note" style="margin-top:-6px"></p>
+  <div style="display:grid;gap:8px">
+    <button class="p big" id="finShare">Share signed form (Mail, Messages, AirDrop&hellip;)</button>
+    <button id="finOpen">Open / print the PDF</button>
+    <button id="finDl">Save PDF to this device</button>
+  </div>
+  <div id="finMail" class="done">Office copy: preparing&hellip;</div>
+  <details><summary class="note" style="cursor:pointer">More</summary>
+    <div style="display:grid;gap:8px;margin-top:8px"><button id="finFile">Share the data file (for the office app)</button><button id="finRetry">Send the office copy again</button></div>
+  </details>
+  <form method="dialog" style="margin-top:12px"><button>Done</button></form>
 </dialog>
 <dialog id="dlgSend">
   <h3 style="margin-top:0">Send to office</h3>
@@ -389,7 +426,71 @@ async function send(){
   $('dlgSend').showModal();
 }
 function markSent(r){r.status='sent';r.sentAt=Date.now();persist();toast('Marked as sent')}
-$('btnSend').onclick=send;
+
+/* ---------- finish: signed PDF + office data copy ---------- */
+const COLLECT='ballardplumbing@gmail.com';
+let fin=null; // {r, bytes, name}
+function pdfName(r){return fileName(r).replace(/\.txt$/,'.pdf').replace(/^BF20700_/,'TCEQ-20700_')}
+async function finish(){
+  const r=saveReport();if(!r)return;
+  if(!r.signature){toast('Sign the form first (tester signature at the bottom)');$('sig').scrollIntoView({behavior:'smooth',block:'center'});return}
+  const b=$('btnFinish'),old=b.textContent;b.disabled=true;b.textContent='Making the signed form…';
+  try{
+    const bytes=await pdfFor(pack(r));fin={r,bytes,name:pdfName(r)};
+    $('finName').textContent=fin.name;
+    r.pdfMade=Date.now();persist();
+    $('dlgFinish').showModal();
+    officeCopy(r);
+  }catch(e){toast('Could not make the PDF: '+(e.message||e))}
+  finally{b.disabled=false;b.textContent=old}
+}
+function finBlob(){return new Blob([fin.bytes],{type:'application/pdf'})}
+$('btnFinish').onclick=finish;
+$('finShare').onclick=async()=>{if(!fin)return;let file=null;try{file=new File([fin.bytes],fin.name,{type:'application/pdf'})}catch(e){}
+  try{if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:fin.name,text:summary(fin.r).replace(/\nReport file attached.*$/,'')});fin.r.status='sent';fin.r.sentAt=Date.now();persist();toast('Shared');return}}
+  catch(e){if(e&&e.name==='AbortError')return}
+  toast('Sharing files is not available here. Saving the PDF instead.');$('finDl').onclick()};
+$('finOpen').onclick=()=>{if(!fin)return;const u=URL.createObjectURL(finBlob());const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove()},500)};
+$('finDl').onclick=()=>{if(!fin)return;const u=URL.createObjectURL(finBlob());const a=document.createElement('a');a.href=u;a.download=fin.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},2000)};
+$('finFile').onclick=()=>{if(fin)send()};
+$('finRetry').onclick=()=>{if(fin)officeCopy(fin.r,true)};
+
+/* the office data copy: emailed through formsubmit.co to the collection address; queued when offline */
+function mailBox(cls,txt){const m=$('finMail');if(!m)return;m.className='done '+(cls||'');m.textContent=txt}
+function officeCopy(r,force){
+  if(state.settings.auto===false&&!force){mailBox('','Office copy: automatic email is off (Office settings).');return}
+  state.outbox=state.outbox||[];
+  if(!state.outbox.some(x=>x.id===r.id&&x.updated===r.updated))state.outbox.push({id:r.id,updated:r.updated,tries:0});
+  persist();flushOutbox(true);
+}
+let flushing=false;
+async function flushOutbox(show){
+  if(flushing)return;flushing=true;
+  try{
+    state.outbox=state.outbox||[];
+    for(const q of state.outbox.slice()){
+      const r=state.reports.find(x=>x.id===q.id);if(!r){state.outbox=state.outbox.filter(x=>x!==q);continue}
+      const to=state.settings.collect||COLLECT;
+      if(show)mailBox('','Office copy: sending to '+to+'…');
+      try{
+        const o=r.data,res=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(to),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
+          _subject:'BPAT report: '+(o.pwsName||'')+' · '+(o.svcAddr||'')+' · '+(o.i_date||''),_template:'box',_captcha:'false',
+          'Water system':(o.pwsName||'')+(o.pwsId?' ('+o.pwsId+')':''),'Address of service':o.svcAddr||'','Assembly':[o.btype,o.mfrM,o.modM,o.serM&&'S/N '+o.serM,o.sizeM].filter(Boolean).join(' · '),
+          'Initial test':[o.i_res,o.i_date].filter(Boolean).join(' · '),'Retest':[o.r_res,o.r_date].filter(Boolean).join(' · '),'Tester':[o.tName,o.tLic&&'BPAT '+o.tLic].filter(Boolean).join(' · '),
+          'Signed':r.signature?'yes':'NO','Report ID':r.id,
+          'Report data (paste into the office app)':JSON.stringify(pack(r))})});
+        const j=await res.json().catch(()=>({}));
+        if(!res.ok||String(j.success)==='false')throw new Error(j.message||('HTTP '+res.status));
+        state.outbox=state.outbox.filter(x=>x!==q);r.mailedAt=Date.now();persist();
+        if(show)mailBox('ok',/activat/i.test(j.message||'')?'Office copy: the first one needs a one-time OK. Open the activation email at '+to+' and confirm, then it sends on its own.':'Office copy emailed to '+to+'.');
+      }catch(e){q.tries++;persist();if(show)mailBox('bad',(navigator.onLine===false?'No signal: ':'Not sent yet: ')+'the office copy will send automatically when this phone is back online.');}
+    }
+  }finally{flushing=false;renderOutbox()}
+}
+function renderOutbox(){const n=(state.outbox||[]).length;const s=$('sync');if(!s)return;if(n){s.textContent=n+' office cop'+(n>1?'ies':'y')+' waiting';s.className='status bad'}}
+window.addEventListener('online',()=>flushOutbox(false));
+setInterval(()=>{if((state.outbox||[]).length&&navigator.onLine!==false)flushOutbox(false)},120000);
+
 $('sendDl').onclick=()=>{if(!sending)return;const b=new Blob([JSON.stringify(pack(sending))],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fileName(sending);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)};
 $('sendMail').onclick=()=>{if(!sending)return;location.href='mailto:'+encodeURIComponent(state.settings.email||'')+'?subject='+encodeURIComponent('Backflow report '+(sending.data.pwsName||''))+'&body='+encodeURIComponent(summary(sending)+'\n\n(Attach the downloaded report file.)')};
 $('sendSms').onclick=()=>{if(!sending)return;location.href='sms:'+(state.settings.phone||'')+'?&body='+encodeURIComponent(summary(sending))};
@@ -423,8 +524,8 @@ function drawMgr(){
   $('mgrAsm').innerHTML=listRow(state.asm,x=>(x.svcAddr||'?')+' · S/N '+(x.serM||'?'),'asm')}
 $('btnMgr').onclick=()=>{drawMgr();$('dlgMgr').showModal()};
 $('dlgMgr').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;state[b.dataset.k]=state[b.dataset.k].filter(x=>x.id!==b.dataset.id);persist();render();drawMgr()});
-$('btnSet').onclick=()=>{$('offEmail').value=state.settings.email||'';$('offPhone').value=state.settings.phone||'';$('dlgSet').showModal()};
-$('setSave').onclick=()=>{state.settings.email=$('offEmail').value.trim();state.settings.phone=$('offPhone').value.trim();persist();$('dlgSet').close();toast('Office saved')};
+$('btnSet').onclick=()=>{$('offCollect').value=state.settings.collect||'';$('offAuto').checked=state.settings.auto!==false;$('offEmail').value=state.settings.email||'';$('offPhone').value=state.settings.phone||'';$('dlgSet').showModal()};
+$('setSave').onclick=()=>{state.settings.collect=$('offCollect').value.trim()||COLLECT;state.settings.auto=$('offAuto').checked;state.settings.email=$('offEmail').value.trim();state.settings.phone=$('offPhone').value.trim();persist();$('dlgSet').close();toast('Office saved')};
 $('btnBackup').onclick=()=>{const b=new Blob([JSON.stringify(state)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backflow-backup-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)};
 $('restoreFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const s=JSON.parse(await f.text());if(!s||!Array.isArray(s.reports))throw 0;if(!confirm('Replace everything on this device with this backup?'))return;state=Object.assign(state,s);persist();render();toast('Restored')}catch(x){toast('That is not a backup file')}};
 
@@ -477,11 +578,13 @@ function seedTech(){state.seeded=state.seeded||[];let n=0;PRESET_TECH.forEach(p=
 
 /* ---------- start ---------- */
 (function init(){
-  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};seedTech();
+  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};if(!state.settings.collect)state.settings.collect=COLLECT;seedTech();
   render();sizeCanvas();
   if(state.draft&&state.draft.data){write(state.draft.data);currentId=state.draft.currentId||null;showSig(state.draft.sigData,state.draft.sigAt)}
   else $('i_date').value=today();
   ready=true;persist();
+  {const sp=$('splash'),go=()=>{sp.classList.add('go');setTimeout(()=>sp.remove(),600)};sp.onclick=go;setTimeout(go,1800)}
+  if((state.outbox||[]).length)setTimeout(()=>flushOutbox(false),3000);
   if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   window.__bf={state:()=>state,read,write,saveReport,pack};
 })();
