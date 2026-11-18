@@ -481,8 +481,9 @@ async function flushOutbox(show){
           'Report data (paste into the office app)':JSON.stringify(pack(r))})});
         const j=await res.json().catch(()=>({}));
         if(!res.ok||String(j.success)==='false')throw new Error(j.message||('HTTP '+res.status));
+        if(/activat|confirm/i.test(j.message||'')){q.tries++;q.needsActivation=true;persist();if(show)mailBox('bad','Office copy is waiting: the email address needs a one-time OK. Open the "Activate form" email at '+to+' and press Activate. This copy sends on its own after that.');continue}
         state.outbox=state.outbox.filter(x=>x!==q);r.mailedAt=Date.now();persist();
-        if(show)mailBox('ok',/activat/i.test(j.message||'')?'Office copy: the first one needs a one-time OK. Open the activation email at '+to+' and confirm, then it sends on its own.':'Office copy emailed to '+to+'.');
+        if(show)mailBox('ok','Office copy emailed to '+to+'.');
       }catch(e){q.tries++;persist();if(show)mailBox('bad',(navigator.onLine===false?'No signal: ':'Not sent yet: ')+'the office copy will send automatically when this phone is back online.');}
     }
   }finally{flushing=false;renderOutbox()}
