@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ballard Plumbing · Gas Pipe Test</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ballard BPAT">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a2048">
+<style>
+:root{color-scheme:light;--navy:#0a2048;--blue:#1257b8;--blue2:#1e7be0;--sky:#eaf2fc;--silver:#c3cad4;--silver2:#e6eaef;--steel:#8a96a6;--bg:#f2f5f9;--card:#fff;--ink:#14213a;--mut:#5b6b80;--line:#d3dae3;--acc:#1257b8;--ok:#177a43;--bad:#b3261e;--yel:#f7faff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:linear-gradient(180deg,#e9eef5 0,#f6f8fb 260px);background-attachment:fixed;color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+header{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));background:linear-gradient(135deg,var(--navy) 0,#0f3478 55%,var(--blue) 100%);color:#fff;position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:3px solid transparent;border-image:linear-gradient(90deg,#9aa5b3,#f4f6f9,#9aa5b3) 1;box-shadow:0 2px 10px #0a204833}
+header .mark{width:52px;height:48px;border-radius:10px;mix-blend-mode:screen;flex:none}
+header h1{font-size:17px;margin:0;flex:1;min-width:150px;letter-spacing:.02em}
+header h1 b{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#cfd8e4;font-weight:600}
+header small{display:block;color:#c3cfdf;font-weight:400;font-size:11px}
+header button{background:linear-gradient(180deg,#ffffff22,#ffffff0d);color:#fff;border-color:#ffffff40;min-height:36px;padding:7px 11px}
+header .status{color:#d9e3f0;border-color:#ffffff55}
+header .status.ok{color:#9ff0c0;border-color:#9ff0c0}
+main{max-width:980px;margin:0 auto;padding:10px}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0;box-shadow:0 1px 0 #fff inset,0 2px 8px #0a20480d;position:relative;overflow:hidden}
+section::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--blue2),var(--navy))}
+section h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px;color:var(--blue);padding-bottom:6px;border-bottom:1px solid;border-image:linear-gradient(90deg,var(--silver),transparent) 1}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.span2{grid-column:span 2}@media(max-width:520px){.span2{grid-column:auto}}
+label{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--yel);border:1px solid var(--silver);border-radius:8px;padding:8px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px #1e7be033;background:#fff}
+input[type=checkbox],input[type=radio]{width:22px;height:22px;accent-color:var(--blue);flex:none}
+textarea{min-height:80px;resize:vertical}
+.row{display:flex;gap:8px;align-items:flex-end}.row>*{flex:1}.row>button{flex:0 0 auto}
+button{font:inherit;border:1px solid var(--silver);background:linear-gradient(180deg,#fff,var(--silver2));color:var(--navy);padding:9px 14px;border-radius:10px;cursor:pointer;min-height:42px;font-weight:500}
+button:active{transform:translateY(1px)}
+button.p{background:linear-gradient(180deg,var(--blue2),var(--blue));color:#fff;border-color:#0d4a9e;font-weight:600;box-shadow:0 2px 6px #1257b840}
+button.big{font-size:18px;min-height:54px}
+button.d{color:var(--bad)}
+.chk{display:flex;flex-wrap:wrap;gap:8px 18px}.chk label{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:15px;margin:0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:6px;vertical-align:top;text-align:left}
+th{background:linear-gradient(180deg,#f7f9fc,var(--silver2));font-weight:600;color:var(--navy)}
+td input[type=text],td input[type=number],td input[type=date],td input[type=time]{padding:6px;margin:2px 0;min-width:70px}
+.mini{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.note{font-size:12px;color:var(--mut)}
+.status{font-size:12px;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
+.status.ok{color:var(--ok);border-color:var(--ok)}.status.bad{color:var(--bad);border-color:var(--bad)}
+dialog{border:1px solid var(--silver);border-radius:16px;background:var(--card);color:var(--ink);max-width:600px;width:94vw;box-shadow:0 20px 60px #0a204866;padding:18px}
+dialog h3{color:var(--navy)}
+dialog::backdrop{background:#0a2048aa}
+.hist{max-height:300px;overflow:auto}
+.hist div{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.hist div span{flex:1;font-size:14px}
+.sigwrap{border:2px dashed var(--silver);border-radius:12px;background:#fff;position:relative}
+canvas#sig{width:100%;height:190px;display:block;touch-action:none;border-radius:12px}
+.sigx{position:absolute;left:12px;bottom:34px;right:12px;border-bottom:1px solid #999;pointer-events:none}
+.sigx span{position:absolute;left:0;bottom:-18px;font-size:11px;color:#777}
+.toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;z-index:30;font-size:14px;max-width:90vw;text-align:center;box-shadow:0 6px 20px #0a204855}
+.bar{position:sticky;bottom:0;background:linear-gradient(180deg,#ffffffee,#f1f4f8);backdrop-filter:blur(6px);border-top:1px solid var(--silver);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:4}
+.bar button{flex:1;min-width:120px}
+#splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 40%,#123a82 0,#0a2048 55%,#050f26 100%);transition:opacity .5s ease;cursor:pointer}
+#splash img{width:min(78vw,420px);mix-blend-mode:screen;animation:glow 2.2s ease-in-out infinite alternate}
+#splash .t{color:#dfe6ef;font-size:13px;letter-spacing:.24em;text-transform:uppercase;text-align:center}
+#splash .t i{display:block;font-style:normal;color:#9fb0c6;letter-spacing:.12em;font-size:11px;margin-top:6px}
+#splash .line{width:160px;height:2px;background:linear-gradient(90deg,transparent,#e8edf3,transparent)}
+#splash.go{opacity:0;pointer-events:none}
+@keyframes glow{from{filter:brightness(.92)}to{filter:brightness(1.12) drop-shadow(0 0 18px #2a8cff66)}}
+@media(prefers-reduced-motion:reduce){#splash img{animation:none}}
+.done{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--sky);border:1px solid #c7dbf3;margin:10px 0;font-size:14px}
+.done.ok{background:#e8f6ee;border-color:#b7e1c7}.done.bad{background:#fdeceb;border-color:#f3c3bf}
+
+.seg{display:flex;border:1px solid var(--silver);border-radius:10px;overflow:hidden}
+.seg label{flex:1;margin:0;text-align:center;padding:10px 4px;font-size:14px;color:var(--navy);background:linear-gradient(180deg,#fff,var(--silver2));cursor:pointer}
+.seg input{display:none}.seg input:checked+span{font-weight:700;color:#fff}
+.seg label:has(input:checked){background:linear-gradient(180deg,var(--blue2),var(--blue));color:#fff}
+.rule{background:var(--sky);border:1px solid #c7dbf3;border-radius:10px;padding:10px 12px;font-size:13px;margin-top:10px}
+.only{font-size:11px;color:var(--steel);font-weight:400}
+.cl{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+.cl .seg label{padding:7px 10px;font-size:13px}
+</style>
+</head>
+<body>
+<div id="splash" role="img" aria-label="Ballard Plumbing"><img src="logo.jpg" alt="Ballard Plumbing"><div class="line"></div><div class="t">Gas Pipe Test<i>City of Dumas &middot; Texas RRC PS-86B</i></div></div>
+<header>
+  <img class="mark" src="logo-mark.jpg" alt="">
+  <h1><b>Ballard Plumbing</b>Gas Pipe Test<small>Dumas form or state PS-86B &middot; saved on this device</small></h1>
+  <span id="sync" class="status">stored locally</span>
+  <button id="gNew">New</button>
+  <button id="gHist">Reports</button>
+  <button onclick="location.href='index.html'">Backflow</button>
+</header>
+<main>
+<section>
+  <h2>Which form</h2>
+  <div class="seg" id="formSeg">
+    <label><input type="radio" name="forms" value="dumas" checked><span>City of Dumas</span></label>
+    <label><input type="radio" name="forms" value="state"><span>State PS-86B</span></label>
+    <label><input type="radio" name="forms" value="both"><span>Both</span></label>
+  </div>
+  <div class="rule" id="rule"></div>
+</section>
+
+<section>
+  <h2>Facility</h2>
+  <div class="grid">
+    <div><label>Acct. or meter #</label><input id="acct"></div>
+    <div><label>Facility / campus name</label><input id="facility"></div>
+    <div class="span2"><label>Facility address</label><input id="facAddr"></div>
+    <div><label>Telephone number</label><input id="facPhone" inputmode="tel"></div>
+    <div><label>Date of test</label><input id="date" type="date"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Testing performed according to</h2>
+  <div class="grid">
+    <div class="dumasOnly"><label>Gas <span class="only">(Dumas form)</span></label><div class="chk"><label><input type="radio" name="gasType" value="natural"> Natural gas</label><label><input type="radio" name="gasType" value="lp"> LP gas</label></div></div>
+    <div class="stateOnly"><label>Code <span class="only">(state form)</span></label><div class="chk"><label><input type="radio" name="basis" value="municipal"> Municipal code</label><label><input type="radio" name="basis" value="rrc"> Railroad Commission code</label></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Pressure and time</h2>
+  <div class="grid">
+    <div><label>System normal operating pressure (NOP)</label><div class="row"><input id="nop" inputmode="decimal"><select id="nopUnit" style="flex:0 0 90px"><option value="lbs">lbs</option><option value="ozs">ozs</option></select></div></div>
+    <div><label>Testing pressure</label><div class="row"><input id="testPressure" inputmode="decimal"><select id="testUnit" style="flex:0 0 90px"><option value="lbs">lbs</option><option value="ozs">ozs</option><option value="">none</option></select></div></div>
+    <div><label>Start</label><input id="start" type="time"></div>
+    <div><label>Stop</label><input id="stop" type="time"></div>
+  </div>
+  <p class="note" id="dur"></p>
+</section>
+
+<section class="dumasOnly">
+  <h2>Appliance checklist <span class="only">(Dumas form)</span></h2>
+  <div class="cl" id="checks"></div>
+</section>
+
+<section>
+  <h2>Result</h2>
+  <div class="grid">
+    <div><label>Repairs required?</label><div class="chk"><label><input type="radio" name="repairs" value="yes"> Yes</label><label><input type="radio" name="repairs" value="no"> No</label></div></div>
+    <div><label>Final results</label><div class="chk"><label><input type="radio" name="result" value="pass"> Pass</label><label><input type="radio" name="result" value="fail"> Fail</label></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Tester</h2>
+  <div class="row" style="margin-bottom:10px"><div><label for="pickTech">Choose a technician</label><select id="pickTech"><option value="">&mdash; pick one to autofill &mdash;</option></select></div></div>
+  <div class="grid">
+    <div><label>Test performed by</label><input id="performedBy"></div>
+    <div><label>Tester (print name)</label><input id="testerName"></div>
+    <div><label>Tester's license # <span class="only">(Dumas form)</span></label><input id="license"></div>
+    <div><label>Tester phone #</label><input id="testerPhone" inputmode="tel"></div>
+    <div><label>Date signed</label><input id="testerDate" type="date"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Witness (optional)</h2>
+  <div class="grid">
+    <div><label>Witnessed by (print name)</label><input id="witnessName"></div>
+    <div><label>Witness date</label><input id="witnessDate" type="date"></div>
+    <div class="span2 dumasOnly"><label>Witness is <span class="only">(Dumas form)</span></label><div class="chk"><label><input type="radio" name="witnessRole" value="building"> Building official</label><label><input type="radio" name="witnessRole" value="fire"> City fire inspector</label><label><input type="radio" name="witnessRole" value="gasco"> Gas company representative</label><label><input type="radio" name="witnessRole" value="marshal"> Fire marshall</label></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Tester signature</h2>
+  <div class="sigwrap"><canvas id="sig"></canvas><div class="sigx"><span>Tester signature</span></div></div>
+  <div class="row" style="margin-top:8px;align-items:center"><span id="sigInfo" class="note">Not signed</span><button id="sigClear" class="d">Clear signature</button></div>
+</section>
+</main>
+<div class="bar">
+  <button id="gSave">Save draft</button>
+  <button class="p" id="gFinish">Finish &amp; make signed form</button>
+</div>
+
+<dialog id="dlgFinish">
+  <h3 style="margin-top:0">Signed form ready</h3>
+  <p id="finName" class="note" style="margin-top:-6px"></p>
+  <div style="display:grid;gap:8px">
+    <button class="p big" id="finShare">Share signed form (Mail, Messages, AirDrop&hellip;)</button>
+    <button id="finOpen">Open / print the PDF</button>
+    <button id="finDl">Save PDF to this device</button>
+  </div>
+  <div id="finMail" class="done">Office copy: preparing&hellip;</div>
+  <form method="dialog" style="margin-top:12px"><button>Done</button></form>
+</dialog>
+<dialog id="dlgHist">
+  <h3 style="margin-top:0">Saved gas tests</h3>
+  <div id="histList" class="hist"></div>
+  <form method="dialog" style="margin-top:12px"><button>Close</button></form>
+</dialog>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const LS='ballard.gas.v1', BF='tceq20700.field.v1', COLLECT='ballardplumbing@gmail.com', FORMAT='gas-pipe-test-report';
+const TXT=['acct','facility','facAddr','facPhone','date','nop','nopUnit','testPressure','testUnit','start','stop','performedBy','testerName','license','testerPhone','testerDate','witnessName','witnessDate'];
+const RAD=['forms','gasType','basis','repairs','result','witnessRole'];
+const CHECKS=[['co','Carbon monoxide detector'],['flue','Flue'],['flex','Flex connectors'],['vent','Vent caps'],['air','Combustion air']];
+let st={reports:[],draft:null,lic:{}},bf={tech:[],settings:{}},cur=null,sigData='',sigAt='',fin=null;
+try{Object.assign(st,JSON.parse(localStorage.getItem(LS)||'{}'))}catch(e){}
+try{Object.assign(bf,JSON.parse(localStorage.getItem(BF)||'{}'))}catch(e){}
+const persist=()=>{try{localStorage.setItem(LS,JSON.stringify(st));$('sync').textContent='stored locally';$('sync').className='status ok'}catch(e){$('sync').textContent='NOT saved';$('sync').className='status bad'}};
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+$('checks').innerHTML=CHECKS.map(([k,l])=>`<span>${l}</span><div class="seg"><label><input type="radio" name="ck_${k}" value="ok"><span>✓ OK</span></label><label><input type="radio" name="ck_${k}" value="na"><span>NA</span></label></div>`).join('');
+function read(){const d={};TXT.forEach(k=>d[k]=$(k).value);RAD.forEach(k=>{const r=document.querySelector(`input[name=${k}]:checked`);d[k]=r?r.value:''});d.checks={};CHECKS.forEach(([k])=>{const r=document.querySelector(`input[name=ck_${k}]:checked`);d.checks[k]=r?r.value:''});return d}
+function write(d){TXT.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k]});RAD.forEach(k=>{document.querySelectorAll(`input[name=${k}]`).forEach(r=>r.checked=r.value===d[k])});CHECKS.forEach(([k])=>document.querySelectorAll(`input[name=ck_${k}]`).forEach(r=>r.checked=!!d.checks&&r.value===d.checks[k]));showForms()}
+function showForms(){const f=(document.querySelector('input[name=forms]:checked')||{}).value||'dumas';
+  document.querySelectorAll('.dumasOnly').forEach(e=>e.style.display=f==='state'?'none':'');document.querySelectorAll('.stateOnly').forEach(e=>e.style.display=f==='dumas'?'none':'');
+  const R=window.GASPDF?GASPDF.RULES:null;$('rule').textContent=R?(f==='both'?R.dumas+' '+R.state+' Use the longer time to satisfy both.':R[f]):'';dur()}
+function dur(){const a=$('start').value,b=$('stop').value;if(!a||!b){$('dur').textContent='';return}const m=(+b.slice(0,2)*60+ +b.slice(3))-(+a.slice(0,2)*60+ +a.slice(3));const f=(document.querySelector('input[name=forms]:checked')||{}).value;const need=f==='dumas'?15:30;
+  $('dur').textContent=m>0?`Test ran ${m} min.`+(m<need?` That is under the ${need} min this form asks for (more if the NOP rule says 1 hour).`:''):''}
+document.addEventListener('change',e=>{if(e.target.name==='forms')showForms();if(e.target.id==='start'||e.target.id==='stop')dur();saveDraft()});
+document.addEventListener('input',()=>saveDraft());
+let draftT=null;function saveDraft(){clearTimeout(draftT);draftT=setTimeout(()=>{st.draft={data:read(),sigData,sigAt,id:cur};persist()},400)}
+// technicians from the backflow app
+$('pickTech').innerHTML+= (bf.tech||[]).map((t,i)=>`<option value="${i}">${(t.tName||'').replace(/</g,'')} — ${(t.coName||'').replace(/</g,'')}</option>`).join('');
+$('pickTech').onchange=()=>{const t=(bf.tech||[])[+$('pickTech').value];if(!t)return;$('testerName').value=t.tName||'';$('performedBy').value=[t.tName,t.coName].filter(Boolean).join(', ');$('testerPhone').value=t.coPhone||'';$('license').value=(st.lic||{})[t.tName]||$('license').value;if(!$('testerDate').value)$('testerDate').value=$('date').value||today();saveDraft();toast('Tester filled in')};
+// signature pad
+const cv=$('sig'),cx=cv.getContext('2d');let drawing=false,last=null;
+function sizeCanvas(){const keep=sigData;const r=cv.getBoundingClientRect();const dpr=window.devicePixelRatio||1;cv.width=Math.max(1,Math.round(r.width*dpr));cv.height=Math.max(1,Math.round(r.height*dpr));cx.setTransform(dpr,0,0,dpr,0,0);cx.lineWidth=2.4;cx.lineCap='round';cx.lineJoin='round';cx.strokeStyle='#111';if(keep)paintSig(keep)}
+function paintSig(url){const im=new Image();im.onload=()=>{const r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width,r.height);const s=Math.min(r.width/im.width,r.height/im.height);cx.drawImage(im,(r.width-im.width*s)/2,(r.height-im.height*s)/2,im.width*s,im.height*s)};im.src=url}
+const pt=e=>{const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);drawing=true;last=pt(e);cx.beginPath();cx.arc(last.x,last.y,1.2,0,6.3);cx.fillStyle='#111';cx.fill()});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=pt(e);cx.beginPath();cx.moveTo(last.x,last.y);cx.lineTo(p.x,p.y);cx.stroke();last=p});
+const endSig=()=>{if(!drawing)return;drawing=false;capture()};['pointerup','pointercancel','pointerleave'].forEach(t=>cv.addEventListener(t,endSig));
+function capture(){const w=cv.width,h=cv.height,d=cx.getImageData(0,0,w,h).data;let x0=w,y0=h,x1=0,y1=0,any=false;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(d[(y*w+x)*4+3]>10){any=true;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+  if(!any){sigData='';sigAt='';info();return}const p=8;x0=Math.max(0,x0-p);y0=Math.max(0,y0-p);x1=Math.min(w-1,x1+p);y1=Math.min(h-1,y1+p);
+  const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').putImageData(cx.getImageData(x0,y0,o.width,o.height),0,0);sigData=o.toDataURL('image/png');sigAt=new Date().toISOString();info();saveDraft()}
+function info(){$('sigInfo').textContent=sigData?'Signed '+new Date(sigAt).toLocaleString():'Not signed'}
+$('sigClear').onclick=()=>{const r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width,r.height);sigData='';sigAt='';info();saveDraft()};
+window.addEventListener('resize',sizeCanvas);
+// save, history
+function saveReport(){const d=read();if(!d.facility&&!d.acct){toast('Fill in the facility first');return null}
+  if(d.testerName)st.lic[d.testerName]=d.license;let r=st.reports.find(x=>x.id===cur);const now=Date.now();
+  if(!r){r={id:uid(),created:now};st.reports.push(r);cur=r.id}Object.assign(r,{updated:now,data:d,signature:sigData,signedAt:sigAt});persist();return r}
+$('gSave').onclick=()=>{if(saveReport())toast('Saved on this device')};
+$('gNew').onclick=()=>{if(!confirm('Start a new gas test? The current one stays in Reports.'))return;saveReport();cur=null;sigData='';sigAt='';const keep=read();write({forms:keep.forms,date:today(),nopUnit:'lbs',testUnit:'lbs',performedBy:keep.performedBy,testerName:keep.testerName,license:keep.license,testerPhone:keep.testerPhone,checks:{}});TXT.filter(k=>!['date','nopUnit','testUnit','performedBy','testerName','license','testerPhone'].includes(k)).forEach(k=>$(k).value='');$('testerDate').value=today();sizeCanvas();info();saveDraft()};
+$('gHist').onclick=()=>{$('histList').innerHTML=st.reports.slice().reverse().map(r=>`<div><span>${(r.data.facility||r.data.acct||'(no name)').replace(/</g,'')}<br><small class="note">${r.data.date||''} · ${r.data.result||'no result'} · ${r.data.forms}</small></span><button data-open="${r.id}">Open</button></div>`).join('')||'<p class="note">No saved gas tests yet.</p>';$('dlgHist').showModal()};
+$('histList').addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(!b)return;const r=st.reports.find(x=>x.id===b.dataset.open);if(!r)return;cur=r.id;write(r.data);sigData=r.signature||'';sigAt=r.signedAt||'';sizeCanvas();if(!sigData){const q=cv.getBoundingClientRect();cx.clearRect(0,0,q.width,q.height)}info();$('dlgHist').close()});
+// finish: signed PDF(s) and the office copy
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('load '+src));document.head.appendChild(s)})}
+const b64=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+const pack=r=>({format:FORMAT,version:1,id:r.id,created:new Date(r.created).toISOString(),updated:new Date(r.updated).toISOString(),signedAt:r.signedAt||'',data:r.data,signature:r.signature||''});
+const fname=r=>{const s=x=>String(x||'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28);return `Gas-Pipe-Test_${s(r.data.facility)||'facility'}_${r.data.date||today()}${r.data.forms==='both'?'':'_'+r.data.forms}.pdf`};
+$('gFinish').onclick=async()=>{const r=saveReport();if(!r)return;if(!r.signature){toast('Sign the form first');cv.scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!r.data.result){toast('Mark pass or fail first');return}
+  const b=$('gFinish'),old=b.textContent;b.disabled=true;b.textContent='Making the signed form…';
+  try{if(!window.PDFLib)await loadScript('vendor/pdf-lib.min.js');if(!window.GASPDF)await loadScript('gasfill.js');
+    const bytes=await GASPDF.fillGas(r.data,b64(r.signature.split(',')[1]),r.data.forms);fin={r,bytes,name:fname(r)};$('finName').textContent=fin.name;$('dlgFinish').showModal();officeCopy(r)}
+  catch(e){toast('Could not make the PDF: '+(e.message||e))}finally{b.disabled=false;b.textContent=old}};
+const blob=()=>new Blob([fin.bytes],{type:'application/pdf'});
+$('finShare').onclick=async()=>{if(!fin)return;let f=null;try{f=new File([fin.bytes],fin.name,{type:'application/pdf'})}catch(e){}
+  try{if(f&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:fin.name});fin.r.sentAt=Date.now();persist();toast('Shared');return}}catch(e){if(e&&e.name==='AbortError')return}
+  toast('Sharing files is not available here. Saving the PDF instead.');$('finDl').onclick()};
+$('finOpen').onclick=()=>{if(!fin)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob());a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500)};
+$('finDl').onclick=()=>{if(!fin)return;const u=URL.createObjectURL(blob());const a=document.createElement('a');a.href=u;a.download=fin.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},2000)};
+function mail(cls,t){$('finMail').className='done '+(cls||'');$('finMail').textContent=t}
+async function officeCopy(r){const s=bf.settings||{};if(s.auto===false){mail('','Office copy: automatic email is off (Office settings in the backflow app).');return}
+  const to=s.collect||COLLECT,o=r.data;mail('','Office copy: sending to '+to+'…');
+  st.outbox=st.outbox||[];if(!st.outbox.includes(r.id))st.outbox.push(r.id);persist();
+  try{const res=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(to),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
+      _subject:'Gas pipe test: '+(o.facility||'')+' · '+(o.facAddr||'')+' · '+(o.date||''),_template:'box',_captcha:'false',
+      'Form':o.forms==='both'?'City of Dumas and State PS-86B':o.forms==='state'?'State PS-86B':'City of Dumas','Facility':o.facility,'Acct or meter':o.acct,'Address':o.facAddr,'Date':o.date,
+      'NOP':[o.nop,o.nopUnit].join(' '),'Testing pressure':[o.testPressure,o.testUnit].join(' '),'Time':(o.start||'')+' to '+(o.stop||''),'Repairs required':o.repairs,'Result':o.result,
+      'Tester':[o.testerName,o.license].filter(Boolean).join(' · '),'Signed':r.signature?'yes':'NO','Report data (paste into the office app)':JSON.stringify(pack(r))})});
+    const j=await res.json().catch(()=>({}));if(!res.ok||String(j.success)==='false'||/activat|confirm/i.test(j.message||''))throw new Error(j.message||'HTTP '+res.status);
+    st.outbox=st.outbox.filter(x=>x!==r.id);r.mailedAt=Date.now();persist();mail('ok','Office copy emailed to '+to+'.')}
+  catch(e){mail('bad',(navigator.onLine===false?'No signal: ':'Not sent yet: ')+'the office copy will send when this phone is back online.')}}
+window.addEventListener('online',()=>{(st.outbox||[]).slice().forEach(id=>{const r=st.reports.find(x=>x.id===id);if(r)officeCopy(r)})});
+// start
+loadScript('vendor/pdf-lib.min.js').then(()=>loadScript('gasfill.js')).then(showForms).catch(()=>{});
+if(st.draft&&st.draft.data){write(st.draft.data);cur=st.draft.id||null;sigData=st.draft.sigData||'';sigAt=st.draft.sigAt||''}else{write({forms:'dumas',date:today(),testerDate:today(),nopUnit:'lbs',testUnit:'lbs',checks:{}})}
+sizeCanvas();info();showForms();
+{const sp=$('splash'),go=()=>{sp.classList.add('go');setTimeout(()=>sp.remove(),600)};sp.onclick=go;setTimeout(go,1400)}
+if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+window.__gas={read,write,saveReport,st:()=>st};
+})();
+</script>
+</body>
+</html>
