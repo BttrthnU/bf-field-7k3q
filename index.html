@@ -573,13 +573,15 @@ $('dlgMuni').addEventListener('close',()=>{mData=null;$('mOut').innerHTML='';$('
 
 /* ---------- preset technicians (added once per device; deleting one keeps it deleted) ---------- */
 const PRESET_TECH=[
- {k:'BP0020597',tName:'Bradley Ballard',coName:'Ballard Plumbing',coAddr:'124 W 8th St, Dumas, TX 79029',coPhone:'806-935-7575',tLic:'BP0020597',tExp:'2027-11-09',gtype:'Potable',gMake:'Midwest 845',gSN:'07210074',gDate:'2025-07-25'},
- {k:'BP0020598',tName:'Joel Reyna',coName:'Ballard Plumbing',coAddr:'124 W 8th St, Dumas, TX 79029',coPhone:'806-935-7575',tLic:'BP0020598',tExp:'2027-11-09',gtype:'Potable',gMake:'',gSN:'',gDate:''}];
+ {k:'BP0020597',tName:'Bradley Ballard',coName:'Ballard Plumbing',coAddr:'117 E. 8th St.',coPhone:'(806)935-7575',tLic:'BP0020597',tExp:'2027-11-09',gtype:'Potable',gMake:'Midwest 835',gSN:'07210074',gDate:'2026-08-11'},
+ {k:'BP0020598',tName:'Joel Reyna',coName:'Ballard Plumbing',coAddr:'117 E. 8th St.',coPhone:'(806)935-7575',tLic:'BP0020598',tExp:'2027-11-09',gtype:'Potable',gMake:'Midwest 835',gSN:'07210074',gDate:'2026-08-11'}];
+const PRESET_VER=2;
+function refreshPresets(){if((state.presetVer||1)>=PRESET_VER)return;PRESET_TECH.forEach(p=>{state.tech.forEach(t=>{if((t.tLic||'').toUpperCase()===p.k)['coAddr','coPhone','gtype','gMake','gSN','gDate'].forEach(f=>{t[f]=p[f]})})});state.presetVer=PRESET_VER}
 function seedTech(){state.seeded=state.seeded||[];let n=0;PRESET_TECH.forEach(p=>{if(state.seeded.includes(p.k))return;state.seeded.push(p.k);if(state.tech.some(t=>(t.tLic||'').toUpperCase()===p.k))return;const o=Object.assign({},p);delete o.k;o.id=uid();o.t=Date.now();state.tech.push(o);n++});return n}
 
 /* ---------- start ---------- */
 (function init(){
-  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};if(!state.settings.collect)state.settings.collect=COLLECT;seedTech();
+  const l=lsRead();if(l)state=Object.assign(state,l);state.settings=state.settings||{email:'',phone:''};if(!state.settings.collect)state.settings.collect=COLLECT;seedTech();refreshPresets();
   render();sizeCanvas();
   if(state.draft&&state.draft.data){write(state.draft.data);currentId=state.draft.currentId||null;showSig(state.draft.sigData,state.draft.sigAt)}
   else $('i_date').value=today();
